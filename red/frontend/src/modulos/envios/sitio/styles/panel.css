@@ -11,18 +11,12 @@
   --sombra: 0 10px 30px -5px rgba(13, 44, 108, 0.08);
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-  font-family: 'Plus Jakarta Sans', Arial, sans-serif;
-  background-color: var(--gris-fondo);
-  color: var(--texto-oscuro);
-  padding: 40px 20px;
-}
-
+/* El padding ya no va en body: antes encogía el header y el footer */
 .panel-container {
-  max-width: 1200px;
+  max-width: 1360px;
   margin: 0 auto;
+  padding: 48px 20px 72px;
+  min-height: 60vh;
 }
 
 .panel-header {
@@ -32,7 +26,7 @@ body {
   margin-bottom: 30px;
 }
 
-h1 {
+.panel-header h1 {
   font-family: 'Poppins', Arial, sans-serif;
   color: var(--azul-express);
 }
@@ -46,32 +40,39 @@ h1 {
   font-size: 0.85rem;
 }
 
+/* ---- Tabla ---- */
 .tabla-wrapper {
   background: var(--blanco);
   border-radius: 12px;
   box-shadow: var(--sombra);
-  overflow: auto;
+  overflow-x: auto;
   border: 1px solid var(--borde);
 }
 
-table {
+.tabla-wrapper table {
   width: 100%;
+  min-width: 1080px;
   border-collapse: collapse;
   text-align: left;
 }
 
-thead {
+.tabla-wrapper thead {
   background-color: var(--azul-express);
   color: var(--blanco);
 }
 
-th, td {
-  padding: 14px 20px;
+.tabla-wrapper th,
+.tabla-wrapper td {
+  padding: 14px 18px;
   border-bottom: 1px solid var(--borde);
   font-size: 0.9rem;
+  vertical-align: middle;
+  white-space: nowrap;
 }
 
-tbody tr:hover { background-color: #f1f5f9; }
+.tabla-wrapper td:nth-child(2) { white-space: normal; min-width: 110px; } /* Remitente */
+.tabla-wrapper tbody tr:hover { background-color: #f1f5f9; }
+.tabla-wrapper tbody tr:last-child td { border-bottom: none; }
 
 .btn-eliminar {
   background-color: var(--rojo-peligro);
@@ -83,7 +84,6 @@ tbody tr:hover { background-color: #f1f5f9; }
   cursor: pointer;
   transition: background 0.3s;
 }
-
 .btn-eliminar:hover { background-color: var(--rojo-hover); }
 
 /* ---- Información de turno y hora de Perú ---- */
@@ -101,14 +101,16 @@ tbody tr:hover { background-color: #f1f5f9; }
 .pago-pagado { background: #dcfce7; color: #166534; }
 .pago-exonerado { background: #e0e7ff; color: #3730a3; }
 
-.acciones-col { display: flex; flex-direction: column; gap: 6px; }
+.acciones-col { display: flex; flex-direction: column; gap: 6px; min-width: 104px; }
 .btn-accion {
-  display: block; padding: 6px 12px; border: none; border-radius: 4px; text-align: center;
+  display: block; padding: 7px 12px; border: none; border-radius: 6px; text-align: center;
   font-size: 0.85rem; font-weight: 700; font-family: inherit; color: #fff; text-decoration: none; cursor: pointer;
+  transition: filter 0.2s ease;
 }
+.btn-accion:hover { filter: brightness(1.12); }
 .btn-editar { background: #0d2c6c; }
 .btn-cancelar { background: #64748b; }
-.btn-accion.btn-eliminar { background: #ef4444; padding: 6px 12px; }
+.btn-accion.btn-eliminar { background: #ef4444; padding: 7px 12px; }
 
 /* ---- Ventana "nuevo registro" ---- */
 dialog { border: none; border-radius: 14px; padding: 26px 28px; width: min(480px, 92vw); box-shadow: 0 25px 60px rgba(0,0,0,.35); }
@@ -124,8 +126,8 @@ dialog input, dialog select { width: 100%; padding: 10px 12px; border: 1.5px sol
 .dialogo-botones button { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: 700; font-family: inherit; cursor: pointer; background: #e2e8f0; color: #0f172a; }
 .dialogo-botones .primario { background: var(--azul-express); color: #fff; }
 .dialogo-botones .primario:disabled { background: #94a3b8; cursor: not-allowed; }
-:focus-visible { outline: 3px solid rgba(13, 44, 108, 0.35); outline-offset: 2px; }
 
+.panel-container :focus-visible { outline: 3px solid rgba(13, 44, 108, 0.35); outline-offset: 2px; }
 
 .panel-herramientas { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
 .panel-buscador { display: flex; gap: 10px; }
@@ -133,3 +135,8 @@ dialog input, dialog select { width: 100%; padding: 10px 12px; border: 1.5px sol
 .panel-btn-consultar { background: #ffb800; color: #0d2c6c; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; }
 .panel-btn-limpiar { background: #e2e8f0; color: #475569; border: none; padding: 10px 15px; border-radius: 6px; font-weight: bold; cursor: pointer; }
 .panel-btn-nuevo { background: #0d2c6c; color: #fff; padding: 10px 20px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-family: inherit; }
+
+@media (max-width: 720px) {
+  .panel-container { padding: 32px 12px 56px; }
+  .panel-buscador input { width: 100%; }
+}
