@@ -10,6 +10,15 @@ function mensajeDe(datos, status) {
   return `Error ${status}`;
 }
 
+function tokenVencido(token) {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return typeof payload.exp === 'number' && payload.exp * 1000 <= Date.now();
+  } catch {
+    return false;
+  }
+}
+
 export class ErrorApi extends Error {
   constructor(status, mensaje) { super(mensaje); this.status = status; }
 }
@@ -54,7 +63,7 @@ export async function pedir(destino, ruta, { method = 'GET', body, token, reinte
     let datos = null;
     try { datos = txt ? JSON.parse(txt) : null; } catch { datos = txt; }
     if (!r.ok) {
-      if (r.status === 401 && token) alExpirar(destino);
+      if (r.status === 401 && token && tokenVencido(token)) alExpirar(destino);
       throw new ErrorApi(r.status, mensajeDe(datos, r.status));
     }
     return datos;
