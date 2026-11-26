@@ -21,7 +21,7 @@ export default function Header() {
               <li><Link to="/requisitos#prohibidos">Artículos prohibidos</Link></li>
             </ul>
           </li>
-          <li><NavLink to="/cotizador">Cotizador</NavLink></li>
+          {(!usuario || usuario.rol === 'cliente') && <li><NavLink to="/cotizador">Cotizador</NavLink></li>}
           <li><NavLink to="/contacto">Ubicación</NavLink></li>
           {usuario?.rol === 'administrador' && <li><NavLink to="/caja">Caja</NavLink></li>}
           {usuario ? (
