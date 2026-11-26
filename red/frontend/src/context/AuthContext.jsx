@@ -49,13 +49,16 @@ export function AuthProvider({ children }) {
         alProgresar(m, 'ok', r.rol);
         return [m, r];
       } catch (e) {
-        alProgresar(m, e.status === 401 || e.status === 403 ? 'sin-acceso' : 'error');
+        // No marcamos 'sin-acceso' todavía; esperamos a verificar los roles centrales en /yo
         return [m, { error: e }];
       }
     }));
 
     const modulos = Object.fromEntries(resultados.filter(([, r]) => r.token));
     if (!Object.keys(modulos).length) {
+      resultados.forEach(([m, r]) => {
+        alProgresar(m, r.error?.status === 401 || r.error?.status === 403 ? 'sin-acceso' : 'error');
+      });
       const credenciales = resultados.some(([, r]) => r.error?.status === 401);
       throw new ErrorApi(401, credenciales ? 'Correo o contraseña incorrectos.' : 'Ningún servidor respondió. Intenta de nuevo en un minuto.');
     }
@@ -78,6 +81,16 @@ export function AuthProvider({ children }) {
         }
       }
     } catch { /* opcional */ }
+
+    // Ahora sí marcamos como 'sin-acceso' o 'error' únicamente los módulos que realmente no tienen acceso
+    for (const [m, r] of resultados) {
+      if (!modulos[m]) {
+        alProgresar(m, r.error?.status === 401 || r.error?.status === 403 ? 'sin-acceso' : 'error');
+      }
+    }
+
+    // Pausa breve para que el usuario vea el estado final de los 4 círculos antes de entrar
+    await new Promise((resolve) => setTimeout(resolve, 450));
 
     const nueva = {
       usuario: { id: perfil.id, nombre: perfil.nombre, correo: perfil.correo, dni: perfil.dni ?? null },
