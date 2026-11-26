@@ -16,7 +16,12 @@ export function escribirSesionModulo(modulo, r) {
   else if (modulo === 'hospital') {
     guardar('hrn.session', { token: r.token, user: { id: u.id, nombre: u.nombre, correo: u.correo ?? '', rol: u.rol, turno: u.turno ?? null } });
   } else if (modulo === 'luz') guardar('sesion', { usuario: u, token: r.token });
-  else if (modulo === 'envios') guardar('usuario', r.crudo ?? { ...u, token: r.token });
+  else if (modulo === 'envios') {
+   // El sitio de ExpressEnvíos espera un usuario PLANO { id, nombre, correo, rol, token }.
+   // Si el rol llegó por la integración (o el login vino anidado), crudo trae { token, usuario: {...} } y el sitio no veía el rol.    const c = r.crudo && typeof r.crudo === 'object' ? r.crudo : {};
+   const interno = c.usuario && typeof c.usuario === 'object' ? c.usuario : {};
+   guardar('usuario', { ...u, ...interno, ...c, usuario: undefined, rol: u.rol, token: r.token });
+  }
 }
 
 // Serenazgo y ExpressEnvíos usan la misma llave "usuario": solo una vive a la vez, por eso se reescribe al entrar a cada sitio.
