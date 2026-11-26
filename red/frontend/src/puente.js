@@ -18,7 +18,8 @@ export function escribirSesionModulo(modulo, r) {
   } else if (modulo === 'luz') guardar('sesion', { usuario: u, token: r.token });
   else if (modulo === 'envios') {
    // El sitio de ExpressEnvíos espera un usuario PLANO { id, nombre, correo, rol, token }.
-   // Si el rol llegó por la integración (o el login vino anidado), crudo trae { token, usuario: {...} } y el sitio no veía el rol.    const c = r.crudo && typeof r.crudo === 'object' ? r.crudo : {};
+   // Si el rol llegó por la integración (o el login vino anidado), crudo trae { token, usuario: {...} } y el sitio no veía el rol.
+   const c = r.crudo && typeof r.crudo === 'object' ? r.crudo : {};
    const interno = c.usuario && typeof c.usuario === 'object' ? c.usuario : {};
    guardar('usuario', { ...u, ...interno, ...c, usuario: undefined, rol: u.rol, token: r.token });
   }
