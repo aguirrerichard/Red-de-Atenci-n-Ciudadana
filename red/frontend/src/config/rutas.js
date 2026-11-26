@@ -21,6 +21,8 @@ export const OPCIONES = {
 };
 
 export const opcionesDe = (modulo, rol, rolHospital) => {
+  // El cajero no es cliente ni personal de gestión: su pantalla es la Caja del sitio completo de cada módulo
+  if (rol === 'cajero') return [[`/${modulo}/sitio/caja`, 'Caja']];
   const base = OPCIONES[modulo][esPersonal(rol) ? 'personal' : 'cliente'];
   // El admin del Hospital ve el estado de sus reclamos de luz sin salir de su app (F2)
   return modulo === 'hospital' && rol === 'administrador' ? [...base, ['/hospital/mis-tramites', 'Mis trámites']] : base;
