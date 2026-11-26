@@ -9,6 +9,7 @@ const AuthContext = createContext(null);
 
 const leer = () => { try { return JSON.parse(sessionStorage.getItem(CLAVE)) || null; } catch { return null; } };
 const guardar = (s) => { try { s ? sessionStorage.setItem(CLAVE, JSON.stringify(s)) : sessionStorage.removeItem(CLAVE); } catch { /* modo privado */ } };
+const esperar = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 function normalizar(modulo, datos) {
   const token = datos?.token;
@@ -41,15 +42,14 @@ export function AuthProvider({ children }) {
   const iniciarSesion = useCallback(async (correo, contrasena, alProgresar = () => {}) => {
     const claves = Object.keys(MODULOS);
     claves.forEach((m) => alProgresar(m, 'conectando'));
+    const inicioAnimacion = Date.now();
 
     const resultados = await Promise.all(claves.map(async (m) => {
       try {
         const datos = await pedir(m, '/auth/login', { method: 'POST', body: { correo, contrasena }, timeoutMs: 75000, reintentos: 3 });
         const r = normalizar(m, datos);
-        alProgresar(m, 'ok', r.rol);
         return [m, r];
       } catch (e) {
-        // No marcamos 'sin-acceso' todavía; esperamos a verificar los roles centrales en /yo
         return [m, { error: e }];
       }
     }));
@@ -77,20 +77,25 @@ export function AuthProvider({ children }) {
             usuario: { id: perfil.id, nombre: perfil.nombre, correo: perfil.correo, rol, turno: null },
             crudo: { token: tokenIntegracion, usuario: { ...perfil, rol } },
           };
-          alProgresar(mod, 'ok', rol);
         }
       }
     } catch { /* opcional */ }
 
-    // Ahora sí marcamos como 'sin-acceso' o 'error' únicamente los módulos que realmente no tienen acceso
+    // Garantiza al menos 1.6s viendo "Conectando..." antes de revelar cada nodo uno por uno
+    const transcurrido = Date.now() - inicioAnimacion;
+    if (transcurrido < 1600) await esperar(1600 - transcurrido);
+
     for (const [m, r] of resultados) {
-      if (!modulos[m]) {
+      if (modulos[m]) {
+        alProgresar(m, 'ok', modulos[m].rol);
+      } else {
         alProgresar(m, r.error?.status === 401 || r.error?.status === 403 ? 'sin-acceso' : 'error');
       }
+      await esperar(280);
     }
 
-    // Pausa breve para que el usuario vea el estado final de los 4 círculos antes de entrar
-    await new Promise((resolve) => setTimeout(resolve, 450));
+    // Pausa final de 1.1s para leer todos los estados confirmados antes de entrar
+    await esperar(1100);
 
     const nueva = {
       usuario: { id: perfil.id, nombre: perfil.nombre, correo: perfil.correo, dni: perfil.dni ?? null },

@@ -271,7 +271,6 @@ html, body, #root {
   cursor: pointer;
 }
 
-/* Aquí estaba el conflicto: ahora se limita SOLO al contenido interno, nunca al login */
 .ra .principal main {
   padding: 32px;
   max-width: 1320px;
@@ -531,11 +530,12 @@ html, body, #root {
 }
 @keyframes ra-gira { to { transform: rotate(360deg); } }
 
-/* ---------- Tarjetas Dashboard (Inicio) ---------- */
+/* ---------- Tarjetas Dashboard (Inicio - Alineación uniforme) ---------- */
 .ra .tarjetas {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 22px;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 24px;
+  align-items: stretch;
 }
 
 .ra .tarjeta-mod {
@@ -545,8 +545,8 @@ html, body, #root {
   border-radius: var(--radio);
   padding: 22px;
   display: grid;
+  grid-template-rows: auto 1fr auto;
   gap: 18px;
-  align-content: space-between;
   box-shadow: var(--sombra-md);
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
   animation: ra-sube 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
@@ -565,9 +565,14 @@ html, body, #root {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 10px;
+  gap: 12px;
+  min-height: 2.8rem;
 }
-.ra .tarjeta-mod h2 { font-size: 1.2rem; color: var(--acento); }
+.ra .tarjeta-mod h2 {
+  font-size: 1.18rem;
+  color: var(--acento);
+  line-height: 1.2;
+}
 .ra .rol {
   background: color-mix(in srgb, var(--acento) 12%, white);
   color: var(--acento);
@@ -578,17 +583,23 @@ html, body, #root {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .ra .tarjeta-mod dl {
-  display: flex;
-  gap: 24px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  align-items: center;
   margin: 0;
-  flex-wrap: wrap;
-  padding: 12px 14px;
+  padding: 16px;
   background: #F8FAFC;
   border-radius: 12px;
   border: 1px solid var(--linea);
+  min-height: 108px;
+}
+.ra .tarjeta-mod dl > div {
+  min-width: 0;
 }
 .ra .tarjeta-mod dd {
   margin: 0;
@@ -600,12 +611,13 @@ html, body, #root {
 .ra .tarjeta-mod dt {
   font-size: 0.8rem;
   color: var(--suave-txt);
-  max-width: 125px;
-  margin-top: 2px;
+  line-height: 1.25;
+  margin-top: 4px;
 }
 
 .ra .tarjeta-mod .btn {
   width: 100%;
+  align-self: end;
 }
 
 /* ---------- Hilo de atención ---------- */
@@ -928,7 +940,8 @@ html, body, #root {
   color: #E2E8F0;
   font: 500 0.85rem/1.3 var(--f-texto);
   border-bottom: 3px solid var(--acento);
-  position: relative;
+  position: sticky;
+  top: 0;
   z-index: 2147483000;
 }
 .ra .rbar a, .ra .rbar button { font: inherit; }
@@ -970,3 +983,12 @@ html, body, #root {
 }
 .ra .rbar a:focus-visible, .ra .rbar button:focus-visible { outline: 3px solid #fff; }
 .ra .toasts-raiz { position: static; }
+
+/* Evita que las cabeceras fijas (LuzCentro, Hospital, etc.) queden tapadas por .rbar */
+body:has(.ra .rbar) header,
+body:has(.ra .rbar) nav[class*="fixed"],
+body:has(.ra .rbar) nav[class*="sticky"],
+.ra:has(.rbar) ~ * header,
+.ra:has(.rbar) ~ * nav {
+  top: 45px !important;
+}
