@@ -4,20 +4,12 @@ import { escribirSesionModulo, limpiarSesionesModulos } from '../puente.js';
 import { ErrorApi, onSesionExpirada, pedir } from '../api/http.js';
 import { MODULOS } from '../config/modulos.js';
 
-/*
- * LOGIN ÚNICO
- * Como los 4 backends comparten la tabla usuarios, el mismo correo y contraseña sirven en todos.
- * Se inicia sesión en los 4 a la vez: cada uno devuelve SU token con SU rol (sale de usuario_rol).
- * Si un backend responde 401, ese usuario no tiene rol en esa app → no aparece en su menú.
- */
-
 const CLAVE = 'rac.sesion';
 const AuthContext = createContext(null);
 
 const leer = () => { try { return JSON.parse(sessionStorage.getItem(CLAVE)) || null; } catch { return null; } };
 const guardar = (s) => { try { s ? sessionStorage.setItem(CLAVE, JSON.stringify(s)) : sessionStorage.removeItem(CLAVE); } catch { /* modo privado */ } };
 
-// Cada backend devuelve el login con una forma distinta
 function normalizar(modulo, datos) {
   const token = datos?.token;
   const usuario = datos?.usuario ?? (modulo === 'envios' ? (({ token: _t, ...resto }) => resto)(datos) : null);
@@ -25,7 +17,6 @@ function normalizar(modulo, datos) {
   return { token, rol: usuario.rol, turno: usuario.turno ?? null, usuario, crudo: datos };
 }
 
-// Decodifica el payload del JWT (sin verificar) para conocer su vencimiento
 const vence = (token) => { try { return JSON.parse(atob(token.split('.')[1])).exp * 1000; } catch { return 0; } };
 
 export function AuthProvider({ children }) {
@@ -35,7 +26,6 @@ export function AuthProvider({ children }) {
   const navegar = useNavigate();
   const cerrarSesion = useCallback((motivo = '') => { guardar(null); limpiarSesionesModulos(); setSesion(null); setAviso(motivo); }, []);
 
-  // Los sitios originales (Serenazgo, Hospital, LuzCentro, ExpressEnvíos) avisan por eventos
   useEffect(() => {
     const salir = () => cerrarSesion();
     const entrar = () => navegar('/login');
@@ -48,10 +38,6 @@ export function AuthProvider({ children }) {
     onSesionExpirada(() => cerrarSesion('Tu sesión venció. Vuelve a iniciar sesión.'));
   }, [cerrarSesion]);
 
-  /**
-   * alProgresar(modulo, estado) permite animar los 4 nodos del login:
-   *   'conectando' → 'ok' | 'sin-acceso' | 'error'
-   */
   const iniciarSesion = useCallback(async (correo, contrasena, alProgresar = () => {}) => {
     const claves = Object.keys(MODULOS);
     claves.forEach((m) => alProgresar(m, 'conectando'));
@@ -74,14 +60,30 @@ export function AuthProvider({ children }) {
       throw new ErrorApi(401, credenciales ? 'Correo o contraseña incorrectos.' : 'Ningún servidor respondió. Intenta de nuevo en un minuto.');
     }
 
-    // Para la API de integración sirve cualquier token (mismo JWT_SECRET): usamos el que vence más tarde
     const tokenIntegracion = Object.values(modulos).map((r) => r.token).sort((a, b) => vence(b) - vence(a))[0];
     let perfil = Object.values(modulos)[0].usuario;
-    try { perfil = await pedir('integracion', '/yo', { token: tokenIntegracion }); } catch { /* opcional */ }
+    try {
+      perfil = await pedir('integracion', '/yo', { token: tokenIntegracion });
+      // Respaldo: si integracion-api confirma roles en usuario_rol que fallaron en su login individual, los restaura
+      const rolesCentrales = Array.isArray(perfil?.roles) ? perfil.roles : [];
+      for (const item of rolesCentrales) {
+        const mod = item?.modulo;
+        if (mod && MODULOS[mod] && !modulos[mod] && item?.rol) {
+          modulos[mod] = {
+            token: tokenIntegracion,
+            rol: item.rol,
+            turno: item.turno ?? null,
+            usuario: { id: perfil.id, nombre: perfil.nombre, correo: perfil.correo, rol: item.rol, turno: item.turno ?? null },
+            crudo: { token: tokenIntegracion, usuario: { ...perfil, rol: item.rol } },
+          };
+          alProgresar(mod, 'ok', item.rol);
+        }
+      }
+    } catch { /* opcional */ }
 
     const nueva = {
       usuario: { id: perfil.id, nombre: perfil.nombre, correo: perfil.correo, dni: perfil.dni ?? null },
-      modulos, // { luz: { token, rol, turno }, ... }
+      modulos,
       tokenIntegracion,
     };
     guardar(nueva);
@@ -98,7 +100,6 @@ export function AuthProvider({ children }) {
     tokenDe: (m) => (m === 'integracion' ? sesion?.tokenIntegracion : sesion?.modulos?.[m]?.token),
     iniciarSesion,
     cerrarSesion,
-    // Copia la sesión del login único a las llaves del sitio original de ese módulo
     sincronizarSesion: (m) => escribirSesionModulo(m, sesion?.modulos?.[m]),
   }), [sesion, aviso, iniciarSesion, cerrarSesion]);
 
