@@ -23,7 +23,6 @@ html, body, #root {
   --f-texto: 'Instrument Sans', system-ui, sans-serif;
 
   width: 100%;
-  min-height: 100vh;
   margin: 0;
   font-family: var(--f-texto);
   color: var(--tinta);
@@ -773,19 +772,21 @@ html, body, #root {
   list-style: none;
   display: flex;
   justify-content: space-between;
-  padding: 12px 6px;
+  align-items: flex-start;
+  padding: 14px 8px;
   margin: 4px 0;
   position: relative;
   background: #F8FAFC;
   border-radius: 14px;
   border: 1px solid var(--linea);
+  overflow: hidden;
 }
 .ra .nodos::before {
   content: '';
   position: absolute;
   left: 12%;
   right: 12%;
-  top: 25px;
+  top: 28px;
   height: 3px;
   background: #CBD5E1;
   border-radius: 99px;
@@ -794,23 +795,35 @@ html, body, #root {
 .ra .nodo {
   position: relative;
   display: grid;
+  align-content: start;
   justify-items: center;
-  gap: 4px;
+  gap: 5px;
   text-align: center;
   flex: 1;
+  min-width: 0;
   font-size: 0.8rem;
 }
 .ra .nodo i {
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   background: #CBD5E1;
   border: 3px solid #fff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
   z-index: 1;
-  transition: all 0.35s ease;
+  transition: transform 0.35s ease, background 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
 }
-.ra .nodo small { color: var(--suave-txt); font-size: 0.74rem; }
+.ra .nodo b {
+  font-size: 0.82rem;
+  line-height: 1.1;
+  margin-top: 2px;
+}
+.ra .nodo small {
+  color: var(--suave-txt);
+  font-size: 0.72rem;
+  line-height: 1.1;
+  min-height: 1.1em;
+}
 .ra .nodo.despierto i {
   background: #fff;
   border-color: var(--acento);
@@ -818,19 +831,41 @@ html, body, #root {
 }
 .ra .nodo.conectando i {
   background: var(--acento);
-  animation: ra-pulso 0.9s ease-in-out infinite;
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--acento) 28%, white);
+  animation: ra-pulso 0.85s ease-in-out infinite;
+}
+.ra .nodo.conectando small {
+  color: var(--acento);
+  font-weight: 700;
 }
 .ra .nodo.ok i {
   background: var(--acento);
-  box-shadow: 0 0 0 5px color-mix(in srgb, var(--acento) 25%, white);
+  transform: scale(1.08);
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--acento) 24%, white);
 }
 .ra .nodo.ok small { color: var(--acento); font-weight: 800; }
 .ra .nodo.sin-acceso b, .ra .nodo.error b { text-decoration: line-through; color: var(--suave-txt); }
 .ra .nodo.sin-acceso i, .ra .nodo.error i { background: #E2E8F0; }
 
-@keyframes ra-pulso {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.28); opacity: 0.65; }
+/* Barra de progreso brillante cuando está iniciando sesión */
+.ra .login-progreso {
+  height: 4px;
+  width: 100%;
+  background: #E2E8F0;
+  border-radius: 99px;
+  overflow: hidden;
+}
+.ra .login-progreso span {
+  display: block;
+  height: 100%;
+  width: 45%;
+  background: linear-gradient(90deg, #2563EB, #0D9488, #2563EB);
+  border-radius: 99px;
+  animation: ra-carga 1.1s ease-in-out infinite;
+}
+@keyframes ra-carga {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(250%); }
 }
 
 .ra .login form { display: grid; gap: 14px; }

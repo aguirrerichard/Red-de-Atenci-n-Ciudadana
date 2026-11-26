@@ -5,6 +5,7 @@ import { despertar } from '../api/http.js';
 import { MODULOS } from '../config/modulos.js';
 
 const TEXTO = { dormido: 'dormido', despierto: 'listo', conectando: 'conectando…', ok: 'conectado', 'sin-acceso': 'sin acceso', error: 'sin respuesta' };
+const esperar = (ms) => new Promise((r) => setTimeout(r, ms));
 
 export default function Login() {
   const { sesion, aviso, iniciarSesion } = useAuth();
@@ -32,8 +33,24 @@ export default function Login() {
     setError('');
     if (!correo.trim() || !clave) return setError('Escribe tu correo y tu contraseña.');
     setEnviando(true);
+
+    // Animación progresiva inicial para apreciar el enlace con cada entidad
+    const lista = Object.keys(MODULOS);
+    for (const m of lista) {
+      setNodos((n) => ({ ...n, [m]: { estado: 'conectando' } }));
+      await esperar(180);
+    }
+
     try {
-      await iniciarSesion(correo.trim(), clave, (m, estado, rol) => setNodos((n) => ({ ...n, [m]: { estado, rol } })));
+      const inicio = Date.now();
+      await iniciarSesion(correo.trim(), clave, (m, estado, rol) => {
+        setTimeout(() => {
+          setNodos((n) => ({ ...n, [m]: { estado, rol } }));
+        }, 250);
+      });
+      // Asegura al menos 1.2s para que se aprecien todos los estados conectados
+      const restante = Math.max(0, 1200 - (Date.now() - inicio));
+      await esperar(restante);
       navegar(state?.desde && state.desde !== '/login' ? state.desde : '/inicio', { replace: true });
     } catch (err) {
       setError(err.message);
@@ -58,18 +75,26 @@ export default function Login() {
           ))}
         </ol>
 
+        {enviando && (
+          <div className="login-progreso" aria-hidden="true">
+            <span />
+          </div>
+        )}
+
         {aviso && <p className="aviso" role="alert">{aviso}</p>}
         <form onSubmit={enviar} noValidate>
           <div className="campo">
             <label htmlFor="correo">Correo</label>
-            <input id="correo" type="email" autoComplete="username" value={correo} onChange={(e) => setCorreo(e.target.value)} />
+            <input id="correo" type="email" autoComplete="username" value={correo} onChange={(e) => setCorreo(e.target.value)} disabled={enviando} />
           </div>
           <div className="campo">
             <label htmlFor="clave">Contraseña</label>
-            <input id="clave" type="password" autoComplete="current-password" value={clave} onChange={(e) => setClave(e.target.value)} />
+            <input id="clave" type="password" autoComplete="current-password" value={clave} onChange={(e) => setClave(e.target.value)} disabled={enviando} />
           </div>
           {error && <p className="error-campo" role="alert">{error}</p>}
-          <button className="btn" type="submit" disabled={enviando}>{enviando ? 'Conectando…' : 'Ingresar'}</button>
+          <button className="btn" type="submit" disabled={enviando}>
+            {enviando ? 'Sincronizando entidades…' : 'Ingresar'}
+          </button>
         </form>
         <p className="ayuda">Si es la primera vez en un rato, los servidores gratuitos pueden tardar hasta un minuto en despertar.</p>
       </section>
