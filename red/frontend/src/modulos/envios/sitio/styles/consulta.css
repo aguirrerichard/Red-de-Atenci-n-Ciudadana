@@ -10,25 +10,19 @@
   --sombra: 0 10px 30px -5px rgba(13, 44, 108, 0.08);
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-  font-family: 'Plus Jakarta Sans', Arial, sans-serif;
-  background-color: var(--gris-fondo);
-  color: var(--texto-oscuro);
-  padding: 40px 20px;
-}
-
+/* El padding ya no va en body: antes encogía el header y el footer y dejaba un margen blanco alrededor */
 .contenedor-consulta {
   max-width: 1180px;
   margin: 0 auto;
+  padding: 48px 20px 72px;
+  min-height: 60vh; /* empuja el footer hacia abajo cuando hay pocos envíos */
 }
 
-h1 {
+.contenedor-consulta h1 {
   font-family: 'Poppins', Arial, sans-serif;
   color: var(--azul-express);
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 32px;
 }
 
 /* ESTILOS DE TABLA */
@@ -36,33 +30,32 @@ h1 {
   background: var(--blanco);
   border-radius: 12px;
   box-shadow: var(--sombra);
-  overflow: hidden;
+  overflow-x: auto;
   border: 1px solid var(--borde);
 }
 
-table {
+.tabla-wrapper table {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
 }
 
-thead {
+.tabla-wrapper thead {
   background-color: var(--azul-express);
   color: var(--blanco);
 }
 
-th, td {
+.tabla-wrapper th,
+.tabla-wrapper td {
   padding: 16px 20px;
   border-bottom: 1px solid var(--borde);
+  vertical-align: middle;
 }
 
-th { font-weight: 600; font-size: 0.95rem; }
-
-td { font-size: 0.9rem; color: var(--texto-oscuro); }
-
-tbody tr:hover { background-color: #f1f5f9; }
-
-tbody tr:last-child td { border-bottom: none; }
+.tabla-wrapper th { font-weight: 600; font-size: 0.95rem; white-space: nowrap; }
+.tabla-wrapper td { font-size: 0.9rem; color: var(--texto-oscuro); }
+.tabla-wrapper tbody tr:hover { background-color: #f1f5f9; }
+.tabla-wrapper tbody tr:last-child td { border-bottom: none; }
 
 /* ESTADOS DEL ENVÍO */
 .estado-badge {
@@ -95,9 +88,8 @@ a.btn-editar:hover { background-color: #e0a200; }
 }
 
 /* ---- Pago, seguimiento y acciones ---- */
-.tabla-wrapper { overflow-x: auto; }
 .celda-estado { min-width: 250px; }
-.celda-estado .seg { margin-top: 4px; }
+.celda-estado .seg { margin-top: 6px; }
 
 .pago-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; white-space: nowrap; }
 .pago-pendiente { background: #fef9c3; color: #854d0e; }
@@ -105,9 +97,16 @@ a.btn-editar:hover { background-color: #e0a200; }
 .pago-exonerado { background: #e0e7ff; color: #3730a3; }
 
 .acciones-fila { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
-.btn-fila { display: inline-block; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-weight: 700; font-size: 0.82rem; color: #fff; white-space: nowrap; }
+.btn-fila { display: inline-block; padding: 8px 14px; border-radius: 6px; text-decoration: none; font-weight: 700; font-size: 0.82rem; color: #fff; white-space: nowrap; transition: filter 0.2s ease; }
+.btn-fila:hover { filter: brightness(1.1); }
 .btn-editar-fila { background: var(--amarillo-express); color: var(--azul-express); }
 .btn-pagar-fila { background: #16a34a; }
 .btn-comprobante-fila { background: var(--azul-express); }
 .solo-lectura { color: #999; font-style: italic; }
-:focus-visible { outline: 3px solid rgba(13, 44, 108, 0.35); outline-offset: 2px; }
+
+.contenedor-consulta :focus-visible { outline: 3px solid rgba(13, 44, 108, 0.35); outline-offset: 2px; }
+
+@media (max-width: 720px) {
+  .contenedor-consulta { padding: 32px 12px 56px; }
+  .tabla-wrapper th, .tabla-wrapper td { padding: 12px 14px; }
+}
