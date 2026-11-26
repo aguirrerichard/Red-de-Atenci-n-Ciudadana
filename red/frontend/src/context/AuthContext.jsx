@@ -64,19 +64,17 @@ export function AuthProvider({ children }) {
     let perfil = Object.values(modulos)[0].usuario;
     try {
       perfil = await pedir('integracion', '/yo', { token: tokenIntegracion });
-      // Respaldo: si integracion-api confirma roles en usuario_rol que fallaron en su login individual, los restaura
-      const rolesCentrales = Array.isArray(perfil?.roles) ? perfil.roles : [];
-      for (const item of rolesCentrales) {
-        const mod = item?.modulo;
-        if (mod && MODULOS[mod] && !modulos[mod] && item?.rol) {
+      const rolesObj = perfil?.roles && typeof perfil.roles === 'object' ? perfil.roles : {};
+      for (const [mod, rol] of Object.entries(rolesObj)) {
+        if (MODULOS[mod] && !modulos[mod] && typeof rol === 'string' && rol) {
           modulos[mod] = {
             token: tokenIntegracion,
-            rol: item.rol,
-            turno: item.turno ?? null,
-            usuario: { id: perfil.id, nombre: perfil.nombre, correo: perfil.correo, rol: item.rol, turno: item.turno ?? null },
-            crudo: { token: tokenIntegracion, usuario: { ...perfil, rol: item.rol } },
+            rol,
+            turno: null,
+            usuario: { id: perfil.id, nombre: perfil.nombre, correo: perfil.correo, rol, turno: null },
+            crudo: { token: tokenIntegracion, usuario: { ...perfil, rol } },
           };
-          alProgresar(mod, 'ok', item.rol);
+          alProgresar(mod, 'ok', rol);
         }
       }
     } catch { /* opcional */ }
