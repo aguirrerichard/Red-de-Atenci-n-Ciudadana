@@ -1,0 +1,62 @@
+export const SLIDES = [
+  { src: "https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&w=1200&q=80", alt: "Unidades operativas de Serenazgo" },
+  { src: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1200&q=80", alt: "Centro de Monitoreo de Videovigilancia" },
+  { src: "https://images.unsplash.com/photo-1508847154043-be5407fcaa5a?auto=format&fit=crop&w=1200&q=80", alt: "Patrullaje Nocturno Municipal" },
+];
+
+export const INCIDENTES = [
+  {
+    id: "boton-auxilio",
+    cardImg: "https://cloudfront-us-east-1.images.arcpublishing.com/lacronicadehoy/CXZVK4PN666DHFY7QMBTHYK5JA.jpg",
+    titulo: "Botón de auxilio",
+    resumen: "Reporte inmediato de emergencias en curso: robos, agresiones o personas en riesgo.",
+    badge: "Atención de Emergencia Inmediata",
+    modalTitulo: "Botón de auxilio en línea",
+    image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=800&q=80",
+    descripcion: "Plataforma digital optimizada para el despacho prioritario de patrullas y serenos en tiempo real. Al presionar el botón de auxilio, se genera un ticket de alerta instantáneo con tu ubicación registrada.",
+    detalles: [
+      "Geolocalización referencial directa a la Central de Cómputo",
+      "Asignación automática de la unidad móvil o motorizada más cercana",
+      "Comunicación directa con el radio operador de turno",
+      "Disponible las 24 horas del día, los 365 días del año",
+    ],
+    btnText: "Reportar emergencia",
+    link: "/reportar",
+  },
+  {
+    id: "patrullaje-zonas",
+    cardImg: "https://images.unsplash.com/photo-1569974498991-d3c12a504f95?auto=format&fit=crop&w=800&q=80",
+    titulo: "Patrullaje por zonas",
+    resumen: "Consulta el recorrido y horario de las unidades asignadas a tu sector.",
+    badge: "Patrullaje Sectorizado",
+    modalTitulo: "Patrullaje por zonas y cuadrantes",
+    image: "https://images.unsplash.com/photo-1569974498991-d3c12a504f95?auto=format&fit=crop&w=800&q=80",
+    descripcion: "Consulta el recorrido, horarios y cuadrantes asignados a tu sector. Despliegue constante de unidades vehiculares y patrullaje a pie para la prevención del delito en zonas urbanas.",
+    detalles: [
+      "Rutas programadas en cuadrantes urbanos y zonas periurbanas",
+      "Monitoreo permanente en coordinación con serenos motorizados",
+      "Presencia física preventiva en puntos de mayor afluencia",
+      "Atención y respuesta directa a comités vecinales de seguridad",
+    ],
+    btnText: "Ver Zonas de Patrullaje",
+    link: "/servicios",
+  },
+  {
+    id: "central-radio",
+    cardImg: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=800&q=80",
+    titulo: "Central de radio",
+    resumen: "Línea directa con el operador de turno para coordinar el apoyo en campo.",
+    badge: "Central de Comunicaciones 24/7",
+    modalTitulo: "Central de radio y mando operativo",
+    image: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?auto=format&fit=crop&w=800&q=80",
+    descripcion: "Mesa de control e interconexión telefónica y de radio para coordinar la respuesta rápida de patrullas, ambulancias, bomberos y la Policía Nacional del Perú.",
+    detalles: [
+      "Línea directa (064) 123-4567 activa de forma permanente",
+      "Red de radiocomunicación integrada de alta cobertura provincial",
+      "Articulación inmediata con la Policía Nacional (105) y SAMU",
+      "Atención y asistencia guiada por operadores capacitados",
+    ],
+    btnText: "Ver Ubicación y Contacto",
+    link: "/contacto",
+  },
+];

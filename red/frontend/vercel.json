@@ -1,0 +1,10 @@
+{
+  "rewrites": [
+    { "source": "/api/serenazgo/:path*", "destination": "https://s13-buendiaquispe-josephleonardo.onrender.com/api/:path*" },
+    { "source": "/api/hospital/:path*", "destination": "https://hospital-backend-h077.onrender.com/api/:path*" },
+    { "source": "/api/luz/:path*", "destination": "https://luzcentro-backend.onrender.com/api/:path*" },
+    { "source": "/api/envios/:path*", "destination": "https://server-zpof.onrender.com/api/:path*" },
+    { "source": "/api/integracion/:path*", "destination": "https://CAMBIA-ESTO-integracion-api.onrender.com/api/:path*" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
