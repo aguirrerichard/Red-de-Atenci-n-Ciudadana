@@ -930,18 +930,26 @@ html, body, #root {
 }
 
 /* ---------- Marco de los sitios originales (barra fina App › Página) ---------- */
+.ra:has(.rbar) {
+  height: 48px;
+}
+
 .ra .rbar {
   display: flex;
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
   padding: 9px 18px;
+  min-height: 48px;
+  width: 100%;
   background: #0F172A;
   color: #E2E8F0;
   font: 500 0.85rem/1.3 var(--f-texto);
   border-bottom: 3px solid var(--acento);
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 2147483000;
 }
 .ra .rbar a, .ra .rbar button { font: inherit; }
@@ -984,11 +992,12 @@ html, body, #root {
 .ra .rbar a:focus-visible, .ra .rbar button:focus-visible { outline: 3px solid #fff; }
 .ra .toasts-raiz { position: static; }
 
-/* Evita que las cabeceras fijas (LuzCentro, Hospital, etc.) queden tapadas por .rbar */
+/* Acopla las cabeceras fijas o sticky de los 4 sitios justo debajo de .rbar */
+.ra:has(.rbar) ~ * header,
+.ra:has(.rbar) ~ * nav[class*="fixed"],
+.ra:has(.rbar) ~ * nav[class*="sticky"],
 body:has(.ra .rbar) header,
 body:has(.ra .rbar) nav[class*="fixed"],
-body:has(.ra .rbar) nav[class*="sticky"],
-.ra:has(.rbar) ~ * header,
-.ra:has(.rbar) ~ * nav {
-  top: 45px !important;
+body:has(.ra .rbar) nav[class*="sticky"] {
+  top: 48px !important;
 }
