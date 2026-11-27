@@ -1,0 +1,112 @@
+/* css/consulta.css */
+:root {
+  --amarillo-express: #ffb800;
+  --azul-express: #0d2c6c;
+  --gris-fondo: #f8fafc;
+  --texto-oscuro: #0f172a;
+  --texto-mutado: #64748b;
+  --blanco: #ffffff;
+  --borde: #e2e8f0;
+  --sombra: 0 10px 30px -5px rgba(13, 44, 108, 0.08);
+}
+
+/* El padding ya no va en body: antes encogía el header y el footer y dejaba un margen blanco alrededor */
+.contenedor-consulta {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 48px 20px 72px;
+  min-height: 60vh; /* empuja el footer hacia abajo cuando hay pocos envíos */
+}
+
+.contenedor-consulta h1 {
+  font-family: 'Poppins', Arial, sans-serif;
+  color: var(--azul-express);
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+/* ESTILOS DE TABLA */
+.tabla-wrapper {
+  background: var(--blanco);
+  border-radius: 12px;
+  box-shadow: var(--sombra);
+  overflow-x: auto;
+  border: 1px solid var(--borde);
+}
+
+.tabla-wrapper table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.tabla-wrapper thead {
+  background-color: var(--azul-express);
+  color: var(--blanco);
+}
+
+.tabla-wrapper th,
+.tabla-wrapper td {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--borde);
+  vertical-align: middle;
+}
+
+.tabla-wrapper th { font-weight: 600; font-size: 0.95rem; white-space: nowrap; }
+.tabla-wrapper td { font-size: 0.9rem; color: var(--texto-oscuro); }
+.tabla-wrapper tbody tr:hover { background-color: #f1f5f9; }
+.tabla-wrapper tbody tr:last-child td { border-bottom: none; }
+
+/* ESTADOS DEL ENVÍO */
+.estado-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.estado-registrado { background-color: #dbeafe; color: #1e3a8a; }
+.estado-atendido { background-color: #dcfce7; color: #166534; }
+
+/* ENLACES Y BOTONES */
+a.btn-editar {
+  color: var(--blanco);
+  background-color: var(--amarillo-express);
+  padding: 8px 16px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: background-color 0.3s ease;
+}
+a.btn-editar:hover { background-color: #e0a200; }
+
+.disabled {
+  color: var(--texto-mutado);
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+/* ---- Pago, seguimiento y acciones ---- */
+.celda-estado { min-width: 250px; }
+.celda-estado .seg { margin-top: 6px; }
+
+.pago-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; white-space: nowrap; }
+.pago-pendiente { background: #fef9c3; color: #854d0e; }
+.pago-pagado { background: #dcfce7; color: #166534; }
+.pago-exonerado { background: #e0e7ff; color: #3730a3; }
+
+.acciones-fila { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+.btn-fila { display: inline-block; padding: 8px 14px; border-radius: 6px; text-decoration: none; font-weight: 700; font-size: 0.82rem; color: #fff; white-space: nowrap; transition: filter 0.2s ease; }
+.btn-fila:hover { filter: brightness(1.1); }
+.btn-editar-fila { background: var(--amarillo-express); color: var(--azul-express); }
+.btn-pagar-fila { background: #16a34a; }
+.btn-comprobante-fila { background: var(--azul-express); }
+.solo-lectura { color: #999; font-style: italic; }
+
+.contenedor-consulta :focus-visible { outline: 3px solid rgba(13, 44, 108, 0.35); outline-offset: 2px; }
+
+@media (max-width: 720px) {
+  .contenedor-consulta { padding: 32px 12px 56px; }
+  .tabla-wrapper th, .tabla-wrapper td { padding: 12px 14px; }
+}

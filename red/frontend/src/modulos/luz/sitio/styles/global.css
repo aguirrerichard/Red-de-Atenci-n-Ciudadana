@@ -1,0 +1,65 @@
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Especificidad máxima para anular ".pg-inicio *" y similares en producción */
+html body [class*="pg-"] i[class*="fa-"],
+html body [class*="pg-"] i[class*="fa-"]::before,
+html body i.fa-solid,
+html body i.fa-solid::before,
+html body i.fas,
+html body i.fas::before,
+html body i.fa-regular,
+html body i.fa-regular::before,
+html body i.far,
+html body i.far::before,
+html body i.fa-brands,
+html body i.fa-brands::before,
+html body i.fab,
+html body i.fab::before {
+  font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
+  font-style: normal !important;
+}
+
+html body [class*="pg-"] i.fa-solid,
+html body [class*="pg-"] i.fa-solid::before,
+html body [class*="pg-"] i.fas,
+html body [class*="pg-"] i.fas::before {
+  font-weight: 900 !important;
+}
+
+html body [class*="pg-"] i.fa-regular,
+html body [class*="pg-"] i.fa-regular::before,
+html body [class*="pg-"] i.far,
+html body [class*="pg-"] i.far::before {
+  font-weight: 400 !important;
+}
+
+html body [class*="pg-"] i.fa-brands,
+html body [class*="pg-"] i.fa-brands::before,
+html body [class*="pg-"] i.fab,
+html body [class*="pg-"] i.fab::before {
+  font-family: "Font Awesome 6 Brands" !important;
+  font-weight: 400 !important;
+}
+
+/* ---- Barra superior SÓLIDA para páginas sin banner (p. ej. /pago) ---- */
+.pg-inicio header.solido {
+  position: sticky;
+  top: 0;
+  padding: 14px 5%;
+  background: rgba(10, 37, 64, 0.98);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  border-bottom: 3px solid var(--acento);
+}
+.pg-inicio header.solido h1 { font-size: 22px; }
+.pg-inicio header.solido .logo-box { padding: 8px 13px; font-size: 22px; }
+/* "overflow-x: hidden" rompe el sticky; "clip" no */
+.pg-inicio:has(header.solido) { overflow-x: clip; }
